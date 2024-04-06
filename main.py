@@ -9,6 +9,4 @@ if __name__ == '__main__':
 ''')
     game_logic.game()
 
-# новая строка
 
-print('hi')
