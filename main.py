@@ -54,9 +54,9 @@ def get_game_result() -> bool:
 
         else:
             print(f'К сожалению, буквы "{letter}" нет в слове.')
+            print(''.join(masked_word))
             attempts_counter += 1
             print(gallows_states[attempts_counter])
-            print(''.join(masked_word))
     return attempts_counter != 6
 
 
