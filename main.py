@@ -1,9 +1,15 @@
 import random
-import gallows_states
+from gallows_states import gallows_states
 
-gallows_states = gallows_states.gallows_states
+
 russian_alphabet = ([chr(i) for i in range(ord('а'), ord('а') + 32)] +
                     [chr(i).upper() for i in range(ord('а'), ord('а') + 32)])
+
+
+def get_secret_word() -> str:
+    with open('russian-nouns.txt', 'r', encoding='utf-8') as file:
+        secret_word = random.choice(tuple(word for word in file.read().split()))
+    return secret_word
 
 
 def mask_word(secret_word: str) -> list[str]:
@@ -20,14 +26,12 @@ def get_letters_index(secret_word: str) -> dict[str, list[int]]:
 
 
 def get_game_result() -> bool:
-    with open('russian-nouns.txt', 'r', encoding='utf-8') as file:
-        secret_word = random.choice(tuple(word for word in file.read().split()))
+    secret_word = get_secret_word()
+    masked_word = mask_word(secret_word)
+    letters_index = get_letters_index(secret_word)
 
     used_letters = []
     attempts_counter = 0
-
-    masked_word = mask_word(secret_word)
-    letters_index = get_letters_index(secret_word)
 
     print(f'Загаданное слово состоит из {len(secret_word)} букв.', end='\n\n')
 
