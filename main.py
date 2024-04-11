@@ -1,14 +1,17 @@
 import random
+import gallows_game_messages as msg
 from gallows_states import gallows_states
 
 
 russian_alphabet = ([chr(i) for i in range(ord('а'), ord('а') + 32)] +
                     [chr(i).upper() for i in range(ord('а'), ord('а') + 32)])
 
+errors_count_default = 6
+
 
 def get_secret_word() -> str:
     with open('russian-nouns.txt', 'r', encoding='utf-8') as file:
-        secret_word = random.choice(tuple(word for word in file.read().split()))
+        secret_word = random.choice(file.read().split())
     return secret_word
 
 
@@ -26,38 +29,37 @@ def get_letters_index(secret_word: str) -> dict[str, list[int]]:
 
 
 def game_continue() -> bool:
-    return input('Если вы хотите сыграть еще раз введите "да": ').lower() == 'да'
+    return input(msg.IS_GAME_CONTINUE).lower() == 'да'
 
 
 def is_win(errors_count: int) -> bool:
-    return errors_count != 6
+    return errors_count != errors_count_default
 
 
-def get_errors_count() -> int:
-    secret_word = get_secret_word()
+def get_errors_count(secret_word: str) -> int:
     masked_word = mask_word(secret_word)
     letters_index = get_letters_index(secret_word)
 
     used_letters = []
     errors_counter = 0
 
-    print(f'Загаданное слово состоит из {len(secret_word)} букв.', end='\n\n')
+    print(msg.LENGTH_OF_SECRET_WORD.forma(len(secret_word)), end='\n\n')
 
     while errors_counter < 6 and ''.join(masked_word) != secret_word:
-        letter = input('Введите букву русского алфавита: ')
+        letter = input(msg.INPUT_LETTER_MESSAGES)
 
         if letter not in russian_alphabet:
-            print('Проверьте раскладку клавиатуры.', end='\n\n')
+            print(msg.CHECK_KEYBOARD_LAYOUT, end='\n\n')
             continue
 
         if letter in used_letters:
-            print(f'Вы уже проверяли наличие буквы {letter} в слове.', end='\n\n')
+            print(msg.REPEATING_LETTER.format(), end='\n\n')
             continue
 
         used_letters.append(letter)
 
         if letter in secret_word:
-            print(f'Да, буква "{letter}" есть в слове!')
+            print(msg.CORRECT_LETTER.format(letter))
 
             for i in letters_index[letter]:
                 masked_word[i] = letter
@@ -65,7 +67,7 @@ def get_errors_count() -> int:
             print(''.join(masked_word), end='\n\n')
 
         else:
-            print(f'К сожалению, буквы "{letter}" нет в слове.')
+            print(msg.WRONG_LETTER.format(letter))
             print(''.join(masked_word))
             errors_counter += 1
             print(gallows_states[errors_counter])
@@ -75,11 +77,12 @@ def get_errors_count() -> int:
 
 def game_cycle():
     while True:
-        errors_count = get_errors_count()
+        secret_word = get_secret_word()
+        errors_count = get_errors_count(secret_word)
         if is_win(errors_count):
-            print('Поздравляю, вы отгадали слово!', end='\n\n')
+            print(msg.IS_WIN, end='\n\n')
         else:
-            print('Вы проиграли.', end='\n\n')
+            print(msg.IS_FAIL, msg.ANSWER.format(secret_word), end='\n\n')
         if game_continue():
             continue
         exit()
