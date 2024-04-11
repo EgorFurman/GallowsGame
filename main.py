@@ -25,17 +25,25 @@ def get_letters_index(secret_word: str) -> dict[str, list[int]]:
     return letters_index
 
 
-def get_game_result() -> bool:
+def game_continue() -> bool:
+    return input('Если вы хотите сыграть еще раз введите "да": ').lower() == 'да'
+
+
+def is_win(errors_count: int) -> bool:
+    return errors_count != 6
+
+
+def get_errors_count() -> int:
     secret_word = get_secret_word()
     masked_word = mask_word(secret_word)
     letters_index = get_letters_index(secret_word)
 
     used_letters = []
-    attempts_counter = 0
+    errors_counter = 0
 
     print(f'Загаданное слово состоит из {len(secret_word)} букв.', end='\n\n')
 
-    while attempts_counter < 6 and ''.join(masked_word) != secret_word:
+    while errors_counter < 6 and ''.join(masked_word) != secret_word:
         letter = input('Введите букву русского алфавита: ')
 
         if letter not in russian_alphabet:
@@ -59,19 +67,20 @@ def get_game_result() -> bool:
         else:
             print(f'К сожалению, буквы "{letter}" нет в слове.')
             print(''.join(masked_word))
-            attempts_counter += 1
-            print(gallows_states[attempts_counter])
-    return attempts_counter != 6
+            errors_counter += 1
+            print(gallows_states[errors_counter])
+
+    return errors_counter
 
 
-def game():
+def game_cycle():
     while True:
-        if get_game_result():
+        errors_count = get_errors_count()
+        if is_win(errors_count):
             print('Поздравляю, вы отгадали слово!', end='\n\n')
         else:
             print('Вы проиграли.', end='\n\n')
-        game_continue = input('Если вы хотите сыграть еще раз введите "да": ').lower()
-        if game_continue == 'да':
+        if game_continue():
             continue
         exit()
 
@@ -82,6 +91,6 @@ if __name__ == '__main__':
 Ваша задача отгадать его прежде, чем нарисованный человек окажется на виселице. 
 Вы можете играть неограниченное количество раз. Удачи!
 ''')
-    game()
+    game_cycle()
 
 
