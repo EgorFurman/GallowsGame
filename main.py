@@ -40,6 +40,10 @@ def print_with_double_indent(*args, **kwargs):
     print(*args, **kwargs, end='\n\n')
 
 
+def is_word_guessed(masked_word: list, secret_word: str) -> bool:
+    return ''.join(masked_word) == secret_word
+
+
 def get_errors_count(secret_word: str) -> int:
     masked_word = mask_word(secret_word)
     letters_index = get_letters_index(secret_word)
@@ -49,7 +53,7 @@ def get_errors_count(secret_word: str) -> int:
 
     print_with_double_indent(Msg.LENGTH_OF_SECRET_WORD.format(len(secret_word)))
 
-    while errors_counter < 6 and ''.join(masked_word) != secret_word:
+    while errors_counter < 6:
         letter = input(Msg.INPUT_LETTER_MESSAGES)
 
         if letter not in russian_alphabet:
@@ -69,6 +73,9 @@ def get_errors_count(secret_word: str) -> int:
                 masked_word[i] = letter
 
             print_with_double_indent(''.join(masked_word))
+
+            if is_word_guessed(masked_word=masked_word, secret_word=secret_word):
+                break
 
         else:
             print(Msg.WRONG_LETTER.format(letter))
