@@ -43,7 +43,7 @@ def get_errors_count(secret_word: str) -> int:
     used_letters = []
     errors_counter = 0
 
-    print(msg.LENGTH_OF_SECRET_WORD.forma(len(secret_word)), end='\n\n')
+    print(msg.LENGTH_OF_SECRET_WORD.format(len(secret_word)), end='\n\n')
 
     while errors_counter < 6 and ''.join(masked_word) != secret_word:
         letter = input(msg.INPUT_LETTER_MESSAGES)
@@ -53,7 +53,7 @@ def get_errors_count(secret_word: str) -> int:
             continue
 
         if letter in used_letters:
-            print(msg.REPEATING_LETTER.format(), end='\n\n')
+            print(msg.REPEATING_LETTER.format(letter), end='\n\n')
             continue
 
         used_letters.append(letter)
