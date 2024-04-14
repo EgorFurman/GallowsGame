@@ -1,4 +1,5 @@
 import random
+import keyboard
 from game_messages import GallowsGameMessages as Msg
 from gallows_states import gallows_states
 
@@ -26,14 +27,6 @@ def get_letters_index(secret_word: str) -> dict[str, list[int]]:
         letters_index.setdefault(letter, []).append(i)
 
     return letters_index
-
-
-def game_continue() -> bool:
-    return input(Msg.IS_GAME_CONTINUE).lower() == 'да'
-
-
-def is_win(errors_count: int) -> bool:
-    return errors_count != errors_count_default
 
 
 def print_with_double_indent(*args, **kwargs):
@@ -86,6 +79,22 @@ def get_errors_count(secret_word: str) -> int:
     return errors_counter
 
 
+def is_win(errors_count: int) -> bool:
+    return errors_count != errors_count_default
+
+
+def handle_key_press() -> None:
+
+    while True:
+        escape = keyboard.is_pressed('esc')
+        enter = keyboard.is_pressed('enter')
+
+        if escape:
+            exit()
+        if enter:
+            return
+
+
 def game_cycle():
     while True:
         secret_word = get_secret_word()
@@ -94,9 +103,11 @@ def game_cycle():
             print_with_double_indent(Msg.IS_WIN)
         else:
             print_with_double_indent(Msg.IS_FAIL, Msg.ANSWER.format(secret_word))
-        if game_continue():
-            continue
-        exit()
+        print_with_double_indent(Msg.ENTER_KEY_MESSAGE)
+        handle_key_press()
+        keyboard.unhook_all()
+        print(Msg.CONTINUE_MESSAGE)
+        continue
 
 
 if __name__ == '__main__':
