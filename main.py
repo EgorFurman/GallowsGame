@@ -36,6 +36,10 @@ def is_win(errors_count: int) -> bool:
     return errors_count != errors_count_default
 
 
+def print_with_double_indent(*args, **kwargs):
+    print(*args, **kwargs, end='\n\n')
+
+
 def get_errors_count(secret_word: str) -> int:
     masked_word = mask_word(secret_word)
     letters_index = get_letters_index(secret_word)
@@ -43,17 +47,17 @@ def get_errors_count(secret_word: str) -> int:
     used_letters = []
     errors_counter = 0
 
-    print(msg.LENGTH_OF_SECRET_WORD.format(len(secret_word)), end='\n\n')
+    print_with_double_indent(msg.LENGTH_OF_SECRET_WORD.format(len(secret_word)))
 
     while errors_counter < 6 and ''.join(masked_word) != secret_word:
         letter = input(msg.INPUT_LETTER_MESSAGES)
 
         if letter not in russian_alphabet:
-            print(msg.CHECK_KEYBOARD_LAYOUT, end='\n\n')
+            print_with_double_indent(msg.CHECK_KEYBOARD_LAYOUT)
             continue
 
         if letter in used_letters:
-            print(msg.REPEATING_LETTER.format(letter), end='\n\n')
+            print_with_double_indent(msg.REPEATING_LETTER.format(letter))
             continue
 
         used_letters.append(letter)
@@ -64,7 +68,7 @@ def get_errors_count(secret_word: str) -> int:
             for i in letters_index[letter]:
                 masked_word[i] = letter
 
-            print(''.join(masked_word), end='\n\n')
+            print_with_double_indent(''.join(masked_word))
 
         else:
             print(msg.WRONG_LETTER.format(letter))
@@ -80,9 +84,9 @@ def game_cycle():
         secret_word = get_secret_word()
         errors_count = get_errors_count(secret_word)
         if is_win(errors_count):
-            print(msg.IS_WIN, end='\n\n')
+            print_with_double_indent(msg.IS_WIN)
         else:
-            print(msg.IS_FAIL, msg.ANSWER.format(secret_word), end='\n\n')
+            print_with_double_indent(msg.IS_FAIL, msg.ANSWER.format(secret_word))
         if game_continue():
             continue
         exit()
