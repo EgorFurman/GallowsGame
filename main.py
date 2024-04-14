@@ -1,5 +1,5 @@
 import random
-import gallows_game_messages as msg
+from game_messages import GallowsGameMessages as Msg
 from gallows_states import gallows_states
 
 
@@ -29,7 +29,7 @@ def get_letters_index(secret_word: str) -> dict[str, list[int]]:
 
 
 def game_continue() -> bool:
-    return input(msg.IS_GAME_CONTINUE).lower() == 'да'
+    return input(Msg.IS_GAME_CONTINUE).lower() == 'да'
 
 
 def is_win(errors_count: int) -> bool:
@@ -47,23 +47,23 @@ def get_errors_count(secret_word: str) -> int:
     used_letters = []
     errors_counter = 0
 
-    print_with_double_indent(msg.LENGTH_OF_SECRET_WORD.format(len(secret_word)))
+    print_with_double_indent(Msg.LENGTH_OF_SECRET_WORD.format(len(secret_word)))
 
     while errors_counter < 6 and ''.join(masked_word) != secret_word:
-        letter = input(msg.INPUT_LETTER_MESSAGES)
+        letter = input(Msg.INPUT_LETTER_MESSAGES)
 
         if letter not in russian_alphabet:
-            print_with_double_indent(msg.CHECK_KEYBOARD_LAYOUT)
+            print_with_double_indent(Msg.CHECK_KEYBOARD_LAYOUT)
             continue
 
         if letter in used_letters:
-            print_with_double_indent(msg.REPEATING_LETTER.format(letter))
+            print_with_double_indent(Msg.REPEATING_LETTER.format(letter))
             continue
 
         used_letters.append(letter)
 
         if letter in secret_word:
-            print(msg.CORRECT_LETTER.format(letter))
+            print(Msg.CORRECT_LETTER.format(letter))
 
             for i in letters_index[letter]:
                 masked_word[i] = letter
@@ -71,7 +71,7 @@ def get_errors_count(secret_word: str) -> int:
             print_with_double_indent(''.join(masked_word))
 
         else:
-            print(msg.WRONG_LETTER.format(letter))
+            print(Msg.WRONG_LETTER.format(letter))
             print(''.join(masked_word))
             errors_counter += 1
             print(gallows_states[errors_counter])
@@ -84,20 +84,16 @@ def game_cycle():
         secret_word = get_secret_word()
         errors_count = get_errors_count(secret_word)
         if is_win(errors_count):
-            print_with_double_indent(msg.IS_WIN)
+            print_with_double_indent(Msg.IS_WIN)
         else:
-            print_with_double_indent(msg.IS_FAIL, msg.ANSWER.format(secret_word))
+            print_with_double_indent(Msg.IS_FAIL, Msg.ANSWER.format(secret_word))
         if game_continue():
             continue
         exit()
 
 
 if __name__ == '__main__':
-    print('''Добро пожаловать в игру "Виселица"! 
-Сейчас программа загадает слово, существительное русского языка. 
-Ваша задача отгадать его прежде, чем нарисованный человек окажется на виселице. 
-Вы можете играть неограниченное количество раз. Удачи!
-''')
+    print(Msg.START_GAME)
     game_cycle()
 
 
