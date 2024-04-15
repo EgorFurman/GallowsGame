@@ -1,13 +1,16 @@
 import random
 import keyboard
+import re
+from typing import Any
 from game_messages import GallowsGameMessages as Msg
 from gallows_states import gallows_states
 
 
-russian_alphabet = ([chr(i) for i in range(ord('а'), ord('а') + 32)] +
-                    [chr(i).upper() for i in range(ord('а'), ord('а') + 32)])
-
 errors_count_default = 6
+
+
+def is_russian_symbol(symbol: Any) -> bool:
+    return isinstance(symbol, str) and re.match(r'^[а-яА-Я]$', symbol)
 
 
 def get_secret_word() -> str:
@@ -47,9 +50,9 @@ def get_errors_count(secret_word: str) -> int:
     print_with_double_indent(Msg.LENGTH_OF_SECRET_WORD.format(len(secret_word)))
 
     while errors_counter < 6:
-        letter = input(Msg.INPUT_LETTER_MESSAGES)
+        letter = input(Msg.INPUT_LETTER_MESSAGE)
 
-        if letter not in russian_alphabet:
+        if not is_russian_symbol(symbol=letter):
             print_with_double_indent(Msg.CHECK_KEYBOARD_LAYOUT)
             continue
 
@@ -60,7 +63,7 @@ def get_errors_count(secret_word: str) -> int:
         used_letters.append(letter)
 
         if letter in secret_word:
-            print(Msg.CORRECT_LETTER.format(letter))
+            print(Msg.GUESSED_LETTER.format(letter))
 
             for i in letters_index[letter]:
                 masked_word[i] = letter
@@ -83,19 +86,20 @@ def is_win(errors_count: int) -> bool:
     return errors_count != errors_count_default
 
 
-def handle_key_press() -> None:
-
+def get_user_continue_choice() -> bool:
     while True:
         escape = keyboard.is_pressed('esc')
         enter = keyboard.is_pressed('enter')
 
         if escape:
-            exit()
+            return False
         if enter:
-            return
+            return True
 
 
-def game_cycle():
+def start_game_cycle():
+    print(Msg.GREETING)
+
     while True:
         secret_word = get_secret_word()
         errors_count = get_errors_count(secret_word)
@@ -103,15 +107,16 @@ def game_cycle():
             print_with_double_indent(Msg.IS_WIN)
         else:
             print_with_double_indent(Msg.IS_FAIL, Msg.ANSWER.format(secret_word))
-        print_with_double_indent(Msg.ENTER_KEY_MESSAGE)
-        handle_key_press()
+        print_with_double_indent(Msg.PRESS_THE_KEY_MESSAGE)
+        is_continue = get_user_continue_choice()
         keyboard.unhook_all()
-        print(Msg.CONTINUE_MESSAGE)
+        print(Msg.REPLAY)
+        if not is_continue:
+            exit()
         continue
 
 
 if __name__ == '__main__':
-    print(Msg.START_GAME)
-    game_cycle()
+    start_game_cycle()
 
 
