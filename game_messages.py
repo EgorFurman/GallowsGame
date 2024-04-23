@@ -18,6 +18,6 @@ class GallowsGameMessages(GameMessages):
     WRONG_LETTER = 'К сожалению, буквы "{}" нет в слове.'
     GUESSED_LETTER = 'Да, буква "{}" есть в слове!'
     LENGTH_OF_SECRET_WORD = 'Загаданное слово состоит из {} букв.'
-    REPEATING_LETTER = 'Вы уже проверяли наличие буквы {} в слове.'
+    REPEATING_LETTER = 'Вы уже проверяли наличие буквы "{}" в слове.'
     PRESS_THE_KEY_MESSAGE = 'Чтобы продолжить игру нажмите Enter. Для выхода из игры нажмите Escape.'
-    REPLAY = 'Продолжим!'
+    CONTINUE = 'Продолжим!'
